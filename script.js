@@ -1,105 +1,91 @@
+let root = document.documentElement;
+const htmlColor = document.querySelector(".colorChoice");
+const htmlErase = document.querySelector(".erase");
+const htmlRainbow = document.querySelector(".rainbow");
+const htmlReset = document.querySelector(".reset");
+const container = document.querySelector(".container");
+const htmlSize = document.querySelector(".size");
+const sketchScreen = document.querySelector(".sketchScreen");
 
+const mouseOverEvent = (color) => {
+  let list = document.querySelectorAll(".col .row");
+  for (let i = 0; i < list.length; i++) {
+    list[i].addEventListener("mouseover", () => {
+      list[i].style.backgroundColor = color;
+    });
+  }
+};
 
-const htmlColor = document.querySelector('.color');
-const htmlErase = document.querySelector('.erase');
-const htmlRainbow = document.querySelector('.rainbow');
-const htmlReset = document.querySelector('.reset');
-const htmlSketchScreen = document.querySelector('.sketchScreen');
-const htmlRange = document.querySelector('.range')
+const mouseOverChangeColor = (newColor) => {
+  let list = document.querySelectorAll(".col, .row");
 
-let numberOfLoops = 0
+  for (let i = 0; i < list.length; i++) {
+    list[i].addEventListener("mouseover", () => {
+      list[i].style.backgroundColor = newColor;
+    });
+  }
+};
 
-const mouseOverEvent = ()=> {
-    let list = document.querySelectorAll('.pixel');
-    for(let i=0; i<list.length;i++) {
-        list[i].addEventListener('mouseover', () => {
-        list[i].classList.add('active');
-    })
-}
-}
-
-const mouseOverChangeColor = (newColor)=> {
-    let list = document.querySelectorAll('.pixel');
-
-    for(let i=0; i<list.length;i++) {
-        list[i].addEventListener('mouseover', () => {
-            list[i].style.backgroundColor = newColor;
-            list[i].classList.toggle('active');
-            }
-    
-  )  } 
-}
-
-
-const eraser = () => {   
-    let list = document.querySelectorAll('.pixel');
-    for(let i=0; i<list.length;i++) {
-        list[i].addEventListener('mouseover', () => {
-            list[i].classList.remove('active');
-            list[i].style.backgroundColor='';
-        })
-    }
-}
+const erase = () => {
+  let list = document.querySelectorAll(".col, .row");
+  for (let i = 0; i < list.length; i++) {
+    list[i].addEventListener("mouseover", () => {
+      list[i].style.backgroundColor = "";
+    });
+  }
+};
 
 const reset = () => {
-    let list = document.querySelectorAll('.pixel');
-    for(let i=0; i<list.length;i++) {
-        list[i].classList.remove('active');
-        list[i].style.backgroundColor='';
-        }
+  let list = document.querySelectorAll(".col, .row");
+  for (let i = 0; i < list.length; i++) {
+    list[i].style.backgroundColor = "";
+  }
+};
+
+function makeGrid(size) {
+  document.querySelector(".sketchScreen").innerHTML = "";
+  let screen = document.querySelector(".sketchScreen");
+  for (let i = 0; i < size; i++) {
+    let column = document.createElement("div");
+    column.classList.add("col");
+    for (let j = 1; j <= size; j++) {
+      let row = document.createElement("div");
+      row.classList.add("row");
+      column.appendChild(row);
     }
-
-const updateScreen = (() => {  
-
-    let list = document.querySelectorAll('.pixel');
-    
-    numberOfLoops = htmlRange.value;
-    for(let i = 0; i < numberOfLoops;i++){
-        let newDiv = document.createElement('div')
-        htmlSketchScreen.appendChild(newDiv)
-
-        for(let j=0; j < numberOfLoops;j++) {
-            let div = document.createElement('div');
-            div.classList.add('pixel');
-            newDiv.appendChild(div)
-    }
-}
-});
-
-const makeGrid = () =>{ 
-    document.querySelector('output').value = htmlRange.value
-    console.log(htmlRange.value)
-    htmlSketchScreen.innerHTML=""
-    updateScreen();
-    mouseOverEvent();
-}
-
-const changeColor = () => {
-    let newColor = htmlColor.value
-    mouseOverChangeColor(newColor);
+    screen.appendChild(column);
+  }
+  mouseOverEvent(htmlColor.value);
 }
 
 const rainbow = () => {
-    let list = document.querySelectorAll('.pixel');
-    for(let i=0; i<list.length;i++) {
-        list[i].addEventListener('mouseover', () => {
-        list[i].classList.add('randomColor');
-        list[i].style.backgroundColor = newColor;
-    })
-}
-}
+  let list = document.querySelectorAll(".col, .row");
+  for (let i = 0; i < list.length; i++) {
+    list[i].addEventListener("mouseover", () => {
+      let colors = [
+        "red",
+        "orange",
+        "yellow",
+        "green",
+        "blue",
+        "indigo",
+        "violet",
+      ];
+      let randomColor = colors[Math.floor(Math.random() * colors.length)];
+      list[i].style.backgroundColor = randomColor;
+    });
+  }
+};
 
-htmlColor.addEventListener('input', changeColor); 
-htmlRange.addEventListener('input', makeGrid); 
-htmlErase.addEventListener('click', eraser);
-htmlReset.addEventListener('click', reset);
-htmlReset.addEventListener('click', rainbow);
+htmlColor.addEventListener("input", () => {
+  let newColor = htmlColor.value;
+  mouseOverChangeColor(newColor);
+});
+htmlErase.addEventListener("click", erase);
+htmlReset.addEventListener("click", reset);
+htmlSize.addEventListener("input", () => {
+  makeGrid(htmlSize.value);
+});
+htmlRainbow.addEventListener("click", rainbow);
 
-
-makeGrid();
-mouseOverEvent();
-
-
-
-
-
+makeGrid(htmlSize.value);
